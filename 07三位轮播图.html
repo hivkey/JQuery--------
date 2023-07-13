@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="C:\Users\WT\Desktop\案例1\css\default.css">
+    <script src="C:\Users\WT\Desktop\案例1\js\jquery.min.js"></script>
+</head>
+<body>
+    <div>
+        <ul>
+            <li class="current"><img src="C:\Users\WT\Desktop\案例1\img\01.webp"></li>
+            <li><img src="C:\Users\WT\Desktop\案例1\img\02.webp"></li>
+            <li><img src="C:\Users\WT\Desktop\案例1\img\03.webp"></li>
+            <li><img src="C:\Users\WT\Desktop\案例1\img\04.webp"></li>
+            <li><img src="C:\Users\WT\Desktop\案例1\img\05.webp"></li>
+        </ul>
+        <button class="lbtn">&lt;</button>
+        <button class="rbtn">&gt;</button>
+        <ol>
+            <li class="cur">1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+        </ol>
+    </div>
+</body>
+</html>
+<script>
+    var idx=0;
+    //封装成函数
+    function rhandle(){
+        //当前显示这张图片从left为0位置运动到-600
+        jQuery("ul li").eq(idx).css({
+            "left":0
+        }).stop(true).animate({
+            "left":-600
+        },500);
+        //下一张图从容器右侧动画进入,
+        idx++;
+        idx = idx>4 ? 0 : idx
+        jQuery("ul li").eq(idx).css({
+            "left":600
+        }).stop(true).animate({
+            "left":0
+        },500)
+        //底下分页器也跟着变化
+        jQuery("ol li").eq(idx).addClass("cur").siblings().removeClass();
+        //addClass代表给标签添加类名，removeClass代表给标签移除类名
+    }
+    jQuery(".rbtn").click(rhandle)
+    //开启定时器让轮播图自动轮播
+    //rhandle ==> function(){rhandle();}
+     var timer = setInterval(function(){
+        rhandle();
+     },1500)
+    //鼠标移上事件
+    jQuery("div").mouseenter(function(){
+        clearInterval(timer);
+    });
+    //鼠标离开事件
+    jQuery("div").mouseleave(function(){
+        timer = setInterval(function(){
+            rhandle();
+        },1500)
+    });
+
+    //左侧按钮
+    jQuery(".lbtn").click(function(){
+        jQuery("ul li").eq(idx).css({
+            "left":0
+        }).stop(true).animate({
+            "left":600
+        },500);
+        //下一张图从容器右侧动画进入
+        idx--;
+        idx=idx<0?4:idx
+        jQuery("ul li").eq(idx).css({
+            "left":-600
+        }).stop(true).animate({
+            "left":0
+        },500);
+        //底下分页器也跟着变化
+        jQuery("ol li").eq(idx).addClass("cur").siblings().removeClass();
+    })
+    /*****************************************************************************************/
+    jQuery("ol li").click(function(){
+        //获取单机的那个分页器li索引值
+        var index=jQuery(this).index();
+        //分两类情况1
+        if(index>idx){
+            jQuery("ul li").eq(idx).css({
+                "left":0
+            }).stop(true).animate({
+                "left":-600
+            },500);
+            jQuery("ul li").eq(index).css({
+                "left":600
+            }).animate({
+                "left":0
+            },500);
+
+            //全局变量idx重新赋值
+            idx=index;
+            //底下分页器也跟着变化
+        jQuery("ol li").eq(idx).addClass("cur").siblings().removeClass();
+        }
+            //分两类情况2
+            if(index<idx){
+            //当前页
+            jQuery("ul li").eq(idx).css({
+                "left":0
+            }).stop(true).animate({
+                "left":600
+            },500);
+            //移动过来的新一页
+            jQuery("ul li").eq(index).css({
+                "left":-600
+            }).stop(true).animate({
+                "left":0
+            },500);
+
+            //全局变量idx重新赋值
+            idx=index;
+            //底下分页器也跟着变化
+        jQuery("ol li").eq(idx).addClass("cur").siblings().removeClass();
+        }
+})
+</script>
